@@ -38,10 +38,13 @@ class OpenCTI:
                     self.helper.log_info('Connector has never run')
                 # If the last_run is more than interval-1 day
                 if last_run is None or ((timestamp - last_run) > ((int(self.opencti_interval) - 1) * 60 * 60 * 24)):
+                    # Initiate the work
+                    work_id = ''
+                    # Do the job
                     sectors_data = urllib.request.urlopen(self.opencti_sectors_file_url).read()
-                    self.helper.send_stix2_bundle(sectors_data.decode('utf-8'), self.helper.connect_scope)
+                    self.helper.send_stix2_bundle(work_id, sectors_data.decode('utf-8'), self.helper.connect_scope)
                     geography_data = urllib.request.urlopen(self.opencti_geography_file_url).read()
-                    self.helper.send_stix2_bundle(geography_data.decode('utf-8'), self.helper.connect_scope)
+                    self.helper.send_stix2_bundle(work_id, geography_data.decode('utf-8'), self.helper.connect_scope)
                     # Store the current timestamp as a last run
                     self.helper.log_info('Connector successfully run, storing last_run as ' + str(timestamp))
                     self.helper.set_state({'last_run': timestamp})
