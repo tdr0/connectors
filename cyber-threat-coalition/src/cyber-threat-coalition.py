@@ -11,7 +11,7 @@ import stix2
 from datetime import datetime
 from pycti import OpenCTIConnectorHelper, get_config_variable
 from pycti.utils.constants import CustomProperties
-from urllib.parse import urlparse, ParseResult, parse_qs, urlencode
+
 
 class CyberThreatCoalition:
 
@@ -100,7 +100,6 @@ class CyberThreatCoalition:
 
             # parse content
             for data in response.iter_lines(decode_unicode=True):
-                data=data.strip("\"")
                 if data and not data.startswith("#"):
                     if collection == "domain":
                         opencti_type = "domain"
@@ -108,17 +107,6 @@ class CyberThreatCoalition:
                         opencti_type = "ipv4-addr"
                     elif collection == "url":
                         opencti_type = "url"
-                        url = urlparse(data)
-                        query = parse_qs(url.query)
-                        res = ParseResult(
-                            scheme=url.scheme,
-                            netloc=url.hostname,
-                            path=url.path,
-                            params=url.params,
-                            query=urlencode(query),
-                            fragment=url.fragment
-                            )
-                        data = res.geturl()
                     elif collection == "hash":
                         opencti_type = self.get_hash_type(data)
 
